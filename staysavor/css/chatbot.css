@@ -1,0 +1,25 @@
+#chatbot-frame {
+    display: none; /* Hide the chatbot iframe by default */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+#chatbot-frame.show-chatbot {
+    display: block; /* Show the chatbot iframe when the "show-chatbot" class is present */
+}
+
+.chatbot-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001; /* Ensure it's above the chatbot iframe */
+    font-size: 24px;
+    color: #333;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}

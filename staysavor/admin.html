@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Stay & Savor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .admin-header {
+            background-color: #f51423;
+            color: rgb(175, 94, 94);
+            padding: 10px;
+        }
+        .admin-container {
+            margin-top: 20px;
+            background-color: #9285b5;
+        }
+        .btn-custom {
+            margin-top: 10px;
+        }
+        .modal-header {
+            background-color: #f80880fe;
+            color: rgb(170, 163, 163);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Admin Panel - Stay & Savor</a>
+    </nav>
+
+    <div class="container admin-container">
+        <h2>Manage Rooms</h2>
+        <button class="btn btn-success btn-custom" id="addRoomBtn">Add Room</button>
+        <table class="table table-bordered" id="roomsTable">
+            <thead>
+                <tr>
+                    <th>Room ID</th>
+                    <th>Room Type</th>
+                    <th>Max Occupancy</th>
+                    <th>Price</th>
+                    <th>Name</th>
+                    <th>Aadhaar Number</th>
+                    <th>Phone Number</th>
+                    <th>Email ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="roomList">
+                <tr>
+                    <td>101</td>
+                    <td>Suite Room</td>
+                    <td>3</td>
+                    <td>$150/night</td>
+                    <td>Kasi</td>
+                    <td>1234-5678-9101</td>
+                    <td>+00 123 456 7890</td>
+                    <td>kasi11@example.com</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary editBtn">Edit</button>
+                        <button class="btn btn-sm btn-danger deleteBtn">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for Add/Edit Room -->
+    <div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="roomModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomModalLabel">Add Room</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="roomForm">
+                        <input type="hidden" id="editRoomId">
+                        <div class="form-group">
+                            <label for="roomId">Room ID</label>
+                            <input type="text" class="form-control" id="roomId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="roomType">Room Type</label>
+                            <input type="text" class="form-control" id="roomType" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="maxOccupancy">Max Occupancy</label>
+                            <input type="number" class="form-control" id="maxOccupancy" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <input type="text" class="form-control" id="price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="aadhaar">Aadhaar Number</label>
+                            <input type="text" class="form-control" id="aadhaar" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email ID</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="saveRoomBtn">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        let editIndex = -1;
+
+        // Open modal for Add Room
+        document.getElementById('addRoomBtn').addEventListener('click', function () {
+            document.getElementById('roomModalLabel').innerText = 'Add Room';
+            document.getElementById('roomForm').reset();
+            document.getElementById('editRoomId').value = '';
+            $('#roomModal').modal('show');
+        });
+
+        // Save Room (Add or Edit)
+        document.getElementById('roomForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const roomId = document.getElementById('roomId').value;
+            const roomType = document.getElementById('roomType').value;
+            const maxOccupancy = document.getElementById('maxOccupancy').value;
+            const price = document.getElementById('price').value;
+            const name = document.getElementById('name').value;
+            const aadhaar = document.getElementById('aadhaar').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            const roomList = document.getElementById('roomList');
+
+            // Edit existing room
+            if (editIndex !== -1) {
+                const row = roomList.rows[editIndex];
+                row.cells[0].innerText = roomId;
+                row.cells[1].innerText = roomType;
+                row.cells[2].innerText = maxOccupancy;
+                row.cells[3].innerText = price;
+                row.cells[4].innerText = name;
+                row.cells[5].innerText = aadhaar;
+                row.cells[6].innerText = phone;
+                row.cells[7].innerText = email;
+                editIndex = -1;
+            } 
+            // Add new room
+            else {
+                const newRow = roomList.insertRow();
+                newRow.innerHTML = `
+                    <td>${roomId}</td>
+                    <td>${roomType}</td>
+                    <td>${maxOccupancy}</td>
+                    <td>${price}</td>
+                    <td>${name}</td>
+                    <td>${aadhaar}</td>
+                    <td>${phone}</td>
+                    <td>${email}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary editBtn">Edit</button>
+                        <button class="btn btn-sm btn-danger deleteBtn">Delete</button>
+                    </td>
+                `;
+            }
+            $('#roomModal').modal('hide');
+        });
+
+        // Delegate click event for Edit and Delete buttons
+        document.getElementById('roomList').addEventListener('click', function (e) {
+            if (e.target.classList.contains('editBtn')) {
+                const row = e.target.closest('tr');
+                editIndex = Array.from(row.parentNode.children).indexOf(row);
+                document.getElementById('roomModalLabel').innerText = 'Edit Room';
+                document.getElementById('roomId').value = row.cells[0].innerText;
+                document.getElementById('roomType').value = row.cells[1].innerText;
+                document.getElementById('maxOccupancy').value = row.cells[2].innerText;
+                document.getElementById('price').value = row.cells[3].innerText;
+                document.getElementById('name').value = row.cells[4].innerText;
+                document.getElementById('aadhaar').value = row.cells[5].innerText;
+                document.getElementById('phone').value = row.cells[6].innerText;
+                document.getElementById('email').value = row.cells[7].innerText;
+                $('#roomModal').modal('show');
+            }
+
+            if (e.target.classList.contains('deleteBtn')) {
+                e.target.closest('tr').remove();
+            }
+        });
+    </script>
+</body>
+</html>
